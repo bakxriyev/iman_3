@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
-import { useToast } from "@/hooks/use-toast"
-import BackgroundEffect from "./background-effect"
+import { useToast } from "../../hooks/toast"
+import BackgroundEffect from "@/components/background-efect"
 
 export default function ThankYouPage() {
   const router = useRouter()
