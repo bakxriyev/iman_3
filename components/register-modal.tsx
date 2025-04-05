@@ -136,6 +136,11 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
       <div className="bg-blur-card rounded-2xl p-8 max-w-md w-full mx-4 border border-[#00e676]/20 animate-glow">
+      <div
+          className={`absolute -top-16 left-0 right-0 bg-gradient-to-r from-black to-green-950 text-white py-3 px-4 rounded-t-xl text-center font-bold text-lg shadow-lg transform transition-transform duration-500`}
+        >
+          Ro'yhatdan o'ting telegram kanalga qo'shiling!
+        </div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white mb-2 text-gradient">Ro'yxatdan o'tish</h2>
           <button onClick={onClose} className="text-white/70 hover:text-[#00e676] transition-colors">
