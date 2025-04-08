@@ -1,31 +1,25 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useToast } from "../hooks/toast"
-import axios from "axios"
 
 interface RegistrationModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: { full_name: string; phone_number: string; tg_user: string }) => void
+  onSubmit: (data: { full_name: string; phone_number: string; tg_user: string }) => Promise<void>
 }
 
 export default function RegistrationModal({ isOpen, onClose, onSubmit }: RegistrationModalProps) {
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "+998",
-    tg_user: "@",
+    tg_user: "",
   })
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
   const router = useRouter()
-  const { toast } = useToast()
 
   const phoneInputRef = useRef<HTMLInputElement>(null)
-  const tgInputRef = useRef<HTMLInputElement>(null)
 
   // Reset form when modal opens
   useEffect(() => {
@@ -33,9 +27,8 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
       setFormData({
         full_name: "",
         phone_number: "+998",
-        tg_user: "@",
+        tg_user: "",
       })
-      setMessage("")
     }
   }, [isOpen])
 
@@ -47,15 +40,6 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
       if (!value.startsWith("+998")) {
         // If user deletes the prefix, keep it
         setFormData((prev) => ({ ...prev, [name]: "+998" + value.replace("+998", "") }))
-      } else {
-        setFormData((prev) => ({ ...prev, [name]: value }))
-      }
-    }
-    // Handle telegram username prefix
-    else if (name === "tg_user") {
-      if (!value.startsWith("@")) {
-        // If user deletes the @, keep it
-        setFormData((prev) => ({ ...prev, [name]: "@" + value.replace("@", "") }))
       } else {
         setFormData((prev) => ({ ...prev, [name]: value }))
       }
@@ -98,28 +82,16 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
     }
   }
 
-  // Replace the handleSubmit function with this optimized version
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    router.push("/thank-you?pending=true")
 
-    // Get the form data before redirecting
-    const submissionData = { ...formData }
-
-    // Call the onSubmit prop to maintain compatibility with parent component
-    await onSubmit(submissionData)
-
-    // Immediately redirect to thank you page without waiting for API response
-
-    // Send data to backend in the background after redirect
     try {
-      // This will run in the background after the page transition
-      axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, submissionData).catch((error) => {
-        console.error("Background submission error:", error)
-      })
+      await onSubmit(formData)
     } catch (error) {
       console.error("Registration error:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -134,15 +106,12 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-      <div className="bg-blur-card rounded-2xl p-8 max-w-md w-full mx-4 border border-[#00e676]/20 animate-glow">
-      <div
-          className={`absolute -top-16 left-0 right-0 bg-gradient-to-r from-black to-green-950 text-white py-3 px-4 rounded-t-xl text-center font-bold text-lg shadow-lg transform transition-transform duration-500`}
-        >
-          Ro'yhatdan o'ting telegram kanalga qo'shiling!
-        </div>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-[#0d1117] rounded-2xl p-8 max-w-md w-full mx-4 border border-[#00e676]/20">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2 text-gradient">Ro'yxatdan o'tish</h2>
+          <h2 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-[#00e676] to-[#00b8d4] bg-clip-text text-transparent">
+            Ro'yxatdan o'tish
+          </h2>
           <button onClick={onClose} className="text-white/70 hover:text-[#00e676] transition-colors">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,14 +128,6 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
             </svg>
           </button>
         </div>
-
-        {message && (
-          <p
-            className={`text-center text-lg mb-4 ${message.includes("Muvaffaqiyatli") ? "text-[#00e676]" : "text-red-400"} bg-opacity-20 p-3 rounded-lg`}
-          >
-            {message}
-          </p>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -192,7 +153,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
               value={formData.full_name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-secondary/50 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
+              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
               placeholder="Ism va familiya"
             />
           </div>
@@ -223,7 +184,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
               onSelect={(e) => handleSelect(e, "+998")}
               onFocus={handleFocus}
               required
-              className="w-full px-4 py-3 bg-secondary/50 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
+              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
               placeholder="+998 XX XXX XX XX"
             />
           </div>
@@ -243,30 +204,24 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
                 <path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z"></path>
                 <polygon points="10 15 15 12 10 9 10 15"></polygon>
               </svg>
-              Telegram username
+              Telegram username (ixtiyoriy)
             </label>
             <input
               id="tg_user"
               name="tg_user"
-              ref={tgInputRef}
               value={formData.tg_user}
               onChange={handleChange}
-              onKeyDown={(e) => handleKeyDown(e, "@")}
-              onSelect={(e) => handleSelect(e, "@")}
-              onFocus={handleFocus}
-              required
-              className="w-full px-4 py-3 bg-secondary/50 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
+              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
               placeholder="@username"
             />
           </div>
 
-          <button type="submit" disabled={loading} className="relative w-full overflow-hidden group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#00e676] to-[#00b8d4] rounded-lg blur-sm opacity-70 group-hover:opacity-100 transition-all duration-300"></div>
-            <div className="relative bg-[#0d1117] border border-[#00e676]/30 rounded-lg py-3 px-6 flex items-center justify-center">
+          <button type="submit" disabled={loading} className="relative w-full">
+            <div className="relative bg-gradient-to-r from-[#00e676] to-[#00b8d4] rounded-lg py-3 px-6 flex items-center justify-center">
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#00e676]"
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -297,4 +252,3 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
     </div>
   )
 }
-

@@ -1,7 +1,6 @@
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
-import { ToastProvider } from '../hooks/toast'
 
 export const metadata: Metadata = {
   title: "Jonli Vebinar - Intizom va Самооценка ni Shakllantirish",
@@ -38,7 +37,7 @@ export default function RootLayout({
         {/* End Meta Pixel Code */}
       </head>
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        {children}
       </body>
     </html>
   )
