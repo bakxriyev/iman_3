@@ -2,22 +2,19 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
 
 interface RegistrationModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: { full_name: string; phone_number: string; tg_user: string }) => Promise<void>
+  onSubmit: (data: { full_name: string; phone_number: string }) => void
 }
 
 export default function RegistrationModal({ isOpen, onClose, onSubmit }: RegistrationModalProps) {
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "+998",
-    tg_user: "",
   })
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   const phoneInputRef = useRef<HTMLInputElement>(null)
 
@@ -27,7 +24,6 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
       setFormData({
         full_name: "",
         phone_number: "+998",
-        tg_user: "",
       })
     }
   }, [isOpen])
@@ -35,13 +31,16 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
-    // Handle phone number prefix
+    // Handle phone number prefix and restrict to numbers only
     if (name === "phone_number") {
-      if (!value.startsWith("+998")) {
+      // Remove any non-numeric characters except the +
+      const numericValue = value.replace(/[^\d+]/g, "")
+
+      if (!numericValue.startsWith("+998")) {
         // If user deletes the prefix, keep it
-        setFormData((prev) => ({ ...prev, [name]: "+998" + value.replace("+998", "") }))
+        setFormData((prev) => ({ ...prev, [name]: "+998" + numericValue.replace("+998", "") }))
       } else {
-        setFormData((prev) => ({ ...prev, [name]: value }))
+        setFormData((prev) => ({ ...prev, [name]: numericValue }))
       }
     }
     // Handle other fields normally
@@ -50,13 +49,41 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
     }
   }
 
-  // Handle key press to ensure prefixes can't be deleted
+  // Handle key press to ensure prefixes can't be deleted and only numbers are entered
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, prefix: string) => {
     const input = e.currentTarget
     const selectionStart = input.selectionStart || 0
 
     // Prevent backspace at prefix length position
     if (e.key === "Backspace" && selectionStart <= prefix.length) {
+      e.preventDefault()
+      return
+    }
+
+    // Allow only numeric keys, navigation keys, and special keys
+    const allowedKeys = [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+      "Enter",
+      "Home",
+      "End",
+    ]
+
+    // Prevent entering non-numeric characters
+    if (!allowedKeys.includes(e.key) && !e.ctrlKey && !e.metaKey) {
       e.preventDefault()
     }
 
@@ -82,17 +109,12 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
-    try {
-      await onSubmit(formData)
-    } catch (error) {
-      console.error("Registration error:", error)
-    } finally {
-      setLoading(false)
-    }
+    // Submit the form data to parent component
+    onSubmit(formData)
   }
 
   // Focus cursor at the end of the prefilled value when input is focused
@@ -103,34 +125,49 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
     }, 0)
   }
 
+  // Handle paste to filter out non-numeric characters
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData("text")
+    const numericText = pastedText.replace(/[^\d+]/g, "")
+
+    if (pastedText !== numericText) {
+      e.preventDefault()
+
+      // Get the current value and selection
+      const input = e.currentTarget
+      const currentValue = input.value
+      const selectionStart = input.selectionStart || 0
+      const selectionEnd = input.selectionEnd || 0
+
+      // Ensure we don't replace the prefix
+      if (selectionStart < 4) {
+        return
+      }
+
+      // Create the new value with only numeric characters
+      const newValue = currentValue.substring(0, selectionStart) + numericText + currentValue.substring(selectionEnd)
+
+      // Update the form data
+      setFormData((prev) => ({
+        ...prev,
+        phone_number: newValue,
+      }))
+
+      // Set cursor position after paste
+      setTimeout(() => {
+        input.selectionStart = input.selectionEnd = selectionStart + numericText.length
+      }, 0)
+    }
+  }
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
-       <div className="relative bg-[#041a2e] rounded-2xl p-8 max-w-md w-full mx-4 border border-[#4db5ff]/20 mt-10">
-       {/* Banner at the top of the modal */}
-       <div className="absolute -top-16 left-0 right-0 bg-gradient-to-r from-[#041a2e] to-[#0a4a8c] text-white py-3 px-4 rounded-t-xl text-center font-bold text-lg shadow-lg transform transition-transform duration-500">
-          Ro'yhatdan o'ting va yopiq telegram kanalga qo'shiling!
-        </div>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-[#00e676] to-[#00b8d4] bg-clip-text text-transparent">
-            Ro'yxatdan o'tish
-          </h2>
-          <button onClick={onClose} className="text-white/70 hover:text-[#00e676] transition-colors">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+      <div className="relative bg-[#041a2e] rounded-2xl p-8 max-w-md w-full mx-4 border border-[#4db5ff]/20 mt-10">
+        {/* Banner at the top of the modal */}
+        <div className="absolute -top-16 left-0 right-0 bg-gradient-to-r from-[#041a2e] to-[#0a4a8c] text-white py-3 px-4 rounded-t-xl text-center font-bold text-lg shadow-lg transform transition-transform duration-500">
+          Davom etish uchun ma'lumotlaringizni kiriting
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -138,7 +175,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
             <label htmlFor="full_name" className="text-white/80 text-sm flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-2 text-[#00e676]"
+                className="h-4 w-4 mr-2 text-[#4db5ff]"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -149,7 +186,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              Ism va familiya
+              Ismingiz:
             </label>
             <input
               id="full_name"
@@ -157,8 +194,8 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
               value={formData.full_name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
-              placeholder="Ism va familiya"
+              className="w-full px-4 py-3 bg-[#0a2a4a]/60 border border-[#4db5ff]/20 rounded-lg focus:ring-2 focus:ring-[#4db5ff]/50 text-white placeholder-white/50"
+              placeholder="Ismingizni kiriting"
             />
           </div>
 
@@ -166,7 +203,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
             <label htmlFor="phone_number" className="text-white/80 text-sm flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-2 text-[#00e676]"
+                className="h-4 w-4 mr-2 text-[#4db5ff]"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -176,56 +213,33 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
               >
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
-              Telefon raqam
+              Telefon raqamingiz:
             </label>
             <input
               id="phone_number"
               name="phone_number"
               ref={phoneInputRef}
+              type="tel"
+              inputMode="numeric"
+              pattern="[+][0-9]*"
               value={formData.phone_number}
               onChange={handleChange}
               onKeyDown={(e) => handleKeyDown(e, "+998")}
               onSelect={(e) => handleSelect(e, "+998")}
               onFocus={handleFocus}
+              onPaste={handlePaste}
               required
-              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
+              className="w-full px-4 py-3 bg-[#0a2a4a]/60 border border-[#4db5ff]/20 rounded-lg focus:ring-2 focus:ring-[#4db5ff]/50 text-white placeholder-white/50"
               placeholder="+998 XX XXX XX XX"
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="tg_user" className="text-white/80 text-sm flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-2 text-[#00e676]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81z"></path>
-                <polygon points="10 15 15 12 10 9 10 15"></polygon>
-              </svg>
-              Telegram username (ixtiyoriy)
-            </label>
-            <input
-              id="tg_user"
-              name="tg_user"
-              value={formData.tg_user}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-white/5 border border-[#00e676]/20 rounded-lg focus:ring-2 focus:ring-[#00e676]/50 text-white placeholder-white/50"
-              placeholder="@username"
-            />
-          </div>
-
           <button type="submit" disabled={loading} className="relative w-full">
-            <div className="relative bg-gradient-to-r from-[#00e676] to-[#00b8d4] rounded-lg py-3 px-6 flex items-center justify-center">
+            <div className="relative bg-[#4db5ff] rounded-lg py-3 px-6 flex items-center justify-center">
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#041a2e]"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -244,10 +258,10 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  <span className="text-white font-bold">Yuborilmoqda...</span>
+                  <span className="text-[#041a2e] font-bold">Yuborilmoqda...</span>
                 </>
               ) : (
-                <span className="text-white font-bold">Yuborish</span>
+                <span className="text-[#041a2e] font-bold">Davom etish</span>
               )}
             </div>
           </button>
