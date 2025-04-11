@@ -13,6 +13,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "+998",
+    tg_user: "",
   })
   const [loading, setLoading] = useState(false)
 
@@ -24,6 +25,7 @@ export default function RegistrationModal({ isOpen, onClose, onSubmit }: Registr
       setFormData({
         full_name: "",
         phone_number: "+998",
+        tg_user:""
       })
     }
   }, [isOpen])
