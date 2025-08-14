@@ -51,7 +51,8 @@ export default function LandingPageComponent() {
               alt="Iman Akhmedovna"
               width={200}
               height={267}
-              className="w-full h-auto object-cover rounded-2xl shadow-lg"
+              className="rounded-2xl shadow-lg"
+              style={{ width: "auto", height: "auto", maxWidth: "100%" }}
               priority
             />
           </div>
