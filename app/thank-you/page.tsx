@@ -5,7 +5,7 @@ export default function ThankYouPage() {
   const router = useRouter()
 
   const handleJoinTelegram = () => {
-    window.open("https://t.me/+lGIkdK0juHUwNDU6", "_blank")
+    window.open("https://t.me/+HzuHstfa6x04MjAy", "_blank")
     // Redirect back to main page after a short delay
     setTimeout(() => {
       router.push("/")
