@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 
-const LandingPageComponent = dynamic(() => import("@/components/landing-page"), {
+const LandingPageComponent = dynamic(() => import("../components/landing-page"), {
   ssr: false,
   loading: () => null,
 })
