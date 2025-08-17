@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import RegistrationModal from "../components/register-modal"
+import RegistrationModal from "./register-modal"
 
 export default function LandingPageComponent() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,147 +20,136 @@ export default function LandingPageComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-100 relative overflow-hidden">
-      <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-br from-yellow-200/30 to-yellow-300/20 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-br from-yellow-100/40 to-yellow-200/30 rounded-full blur-2xl"></div>
-
-      {/* Header */}
-      <header className="flex justify-center items-center gap-8 mb-8 mt-4">
-        <div className="relative flex items-center space-x-2 bg-gradient-to-r from-yellow-50 to-white px-6 py-3 rounded-full border border-yellow-200/50 shadow-sm">
-          <div className="absolute top-0 left-2 w-3 h-3 border-t border-l border-yellow-300 rounded-tl-lg"></div>
-          <div className="absolute top-0 right-2 w-3 h-3 border-t border-r border-yellow-300 rounded-tr-lg"></div>
-          <div className="absolute bottom-0 left-2 w-3 h-3 border-b border-l border-yellow-300 rounded-bl-lg"></div>
-          <div className="absolute bottom-0 right-2 w-3 h-3 border-b border-r border-yellow-300 rounded-br-lg"></div>
-          <span className="text-yellow-700 font-semibold">2,3,4-SENTABR</span>
-        </div>
-        <div className="relative flex items-center space-x-2 bg-gradient-to-r from-yellow-50 to-white px-6 py-3 rounded-full border border-yellow-200/50 shadow-sm">
-          <div className="absolute top-0 left-2 w-3 h-3 border-t border-l border-yellow-300 rounded-tl-lg"></div>
-          <div className="absolute top-0 right-2 w-3 h-3 border-t border-r border-yellow-300 rounded-tr-lg"></div>
-          <div className="absolute bottom-0 left-2 w-3 h-3 border-b border-l border-yellow-300 rounded-bl-lg"></div>
-          <div className="absolute bottom-0 right-2 w-3 h-3 border-b border-r border-yellow-300 rounded-br-lg"></div>
-          <span className="text-yellow-700 font-semibold">20:00</span>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col lg:flex-row items-center justify-center px-8 py-6 max-w-7xl mx-auto">
-        <div className="lg:w-1/3 relative flex justify-center items-start order-1 lg:order-2">
-          <div className="relative w-full max-w-[200px]">
-            <Image
-              src="/photo.jpg"
-              alt="Iman Akhmedovna"
-              width={200}
-              height={267}
-              className="rounded-2xl shadow-lg"
-              style={{ width: "auto", height: "auto", maxWidth: "100%" }}
-              priority
-            />
+    <div className="min-h-screen bg-gray-900 text-white">
+      <div className="max-w-md mx-auto px-4 py-3">
+        <div className="flex justify-center mb-3">
+          <div className="bg-black/50 rounded-full px-4 py-2 flex items-center gap-2 border border-gray-600">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-white text-sm font-medium">2-3-4 sentabr | 20:00</span>
           </div>
         </div>
 
-        {/* Left Content */}
-        <div className="lg:w-2/3 space-y-6 lg:pr-8 text-center lg:text-left order-2 lg:order-1">
-          <div className="relative inline-block mb-2 px-6 py-3 bg-gradient-to-r from-yellow-100 to-yellow-50 rounded-full border border-yellow-200/50 shadow-sm">
-            <div className="absolute top-0 left-2 w-2 h-2 border-t border-l border-yellow-300 rounded-tl-md"></div>
-            <div className="absolute top-0 right-2 w-2 h-2 border-t border-r border-yellow-300 rounded-tr-md"></div>
-            <div className="absolute bottom-0 left-2 w-2 h-2 border-b border-l border-yellow-300 rounded-bl-md"></div>
-            <div className="absolute bottom-0 right-2 w-2 h-2 border-b border-r border-yellow-300 rounded-br-md"></div>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-yellow-700 font-bold">BEPUL VEBINAR</span>
-              <span className="bg-gradient-to-r from-yellow-200 to-yellow-100 text-yellow-800 px-3 py-1 text-xs font-bold rounded-full border border-yellow-300/50">
-                LIVE
-              </span>
+        <div className="text-center">
+          <p className="text-gray-300 text-sm mb-2">Iman Ahmedovadan 3 kunlik BEPUL maxsus dars</p>
+
+          <h1 className="text-white text-xl font-bold mb-4 leading-tight">
+            DANGASALIK VA QO'RQUVLARINGIZNI YENGMASDAN BARAKALI VA XOTIRJAM HAYOTDA YASHAY OLMAYSIZ
+          </h1>
+
+          <div className="mb-4">
+            <h2 className="text-yellow-400 text-lg font-semibold uppercase">"Dangasalikdan qutul va xotirjam hayotda yasha"</h2>
+          </div>
+
+          <div className="relative mb-4 flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-xl blur-lg"></div>
+              <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-1">
+                <Image
+                  src="/iman.png"
+                  alt="Iman Ahmedova"
+                  width={200}
+                  height={250}
+                  className="w-48 h-60 object-cover rounded-lg"
+                  priority
+                />
+              </div>
             </div>
           </div>
 
-          {/* Title */}
-          <h1 className="text-2xl md:text-4xl font-serif font-bold mb-2 text-gray-800">
-            Iman Akhmedovnadan 3 kunlik Bepul Vebinar
-          </h1>
+          <button
+            onClick={handleRegister}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-base py-3 rounded-lg mb-6 flex items-center justify-center gap-2 transition-colors"
+          >
+            YOPIQ KANALGA QO'SHILISH
+            <span className="bg-white text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              →
+            </span>
+          </button>
 
-          <div className="relative mt-4 bg-gradient-to-r from-yellow-50 to-white p-6 rounded-2xl border border-yellow-200/50 shadow-sm">
-            <div className="absolute top-1 left-3 w-4 h-4 border-t border-l border-yellow-300 rounded-tl-lg"></div>
-            <div className="absolute top-1 right-3 w-4 h-4 border-t border-r border-yellow-300 rounded-tr-lg"></div>
-            <div className="absolute bottom-1 left-3 w-4 h-4 border-b border-l border-yellow-300 rounded-bl-lg"></div>
-            <div className="absolute bottom-1 right-3 w-4 h-4 border-b border-r border-yellow-300 rounded-br-lg"></div>
-            <h1 className="text-2xl md:text-4xl font-serif font-bold text-yellow-600 leading-tight">
-              "Dangasalikdan Halos Bo'l"
-            </h1>
+          <p className="text-gray-400 text-sm mb-8">Bepul qatnashish uchun bosing</p>
+
+        
+
+          <div className="mb-8">
+            <h2 className="text-white font-bold text-xl mb-6">ONLAYN BEPUL DARSDA SIZ:</h2>
+
+            <div className="space-y-4 uppercase">
+              <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed text-left">
+                  dangasalikning ichki-ruhiy sabablarini bilib olasiz
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed text-left">
+                  nega doim katta ishtiyoq bilan boshlagan ishlaringizni oxiriga yetkazolmay to'xtab qolishi sabablarini
+                  bilib olasiz
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed text-left">
+                  qanday qilib birgina dangasalik va qo'rquvlarni yengish orqali hayotimizda katta o'zgarishlar bo'lishi
+                  mumkinligini bilib olasiz
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6">
-            <button
-              onClick={handleRegister}
-              className="bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-600 hover:to-yellow-500 text-white font-bold text-xl px-8 py-4 rounded-lg shadow-lg transition-all duration-200"
-            >
-              ISHTIROK ETISH - BEPUL
-            </button>
-          </div>
+          <button
+            onClick={handleRegister}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          >
+            DARSDA JONLI QATNASHISH
+            <span className="bg-white text-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-sm">
+              →
+            </span>
+          </button>
+          <p className="text-gray-400 text-sm mb-8">Bepul qatnashish uchun bosing</p>
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-gray-800">
+              <div className="text-center">
+                <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden border-2 border-gray-700">
+                  <Image
+                    src="/photo.jpg"
+                    alt="Iman Akhmedova"
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: "center 30%" }}
+                  />
+                </div>
+                <h3 className="text-white font-bold text-xl mb-6 font-sans">IMAN AKHMEDOVA</h3>
+                <div className="text-white/90 font-sans leading-relaxed space-y-3 text-left">
+                  <p>• Oilaviy munosabatlar va bolalar psixologi</p>
+                  <p>• Prezidentimiz tomonidan taqdirlangan 30 yillik ko'krak nishoni sohibasi</p>
+                  <p>• 3 yillik tajriba</p>
+                  <p>• 50.000 dan ortiq o'quvchilar</p>
+                  <p>• Psixologlar assotsiatsiyasi a'zosi</p>
+                  <p>• PHD mustaqil izlanuvchisi</p>
+                </div>
+              </div>
+            </div>
+          <button
+            onClick={handleRegister}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          >
+            MAXSUS KANALGA QO'SHILISH
+            <span className="bg-white text-blue-600 rounded-full w-6 h-6 flex items-center justify-center text-sm">
+              →
+            </span>
+          </button>
+          <p className="text-gray-400 text-sm mb-8">Bepul qatnashish uchun bosing</p>
         </div>
-      </main>
-
-      {/* Webinar topics */}
-      <section className="px-8 py-12 w-full max-w-5xl mx-auto">
-        <div className="bg-gradient-to-r from-yellow-50 to-white rounded-2xl p-8 mb-8 border border-yellow-200/50 shadow-sm">
-          <h2 className="text-xl md:text-2xl font-serif font-bold mb-6 text-center text-gray-800">
-            Jonli Bepul Vebinar davomida quyidagilar haqida gaplashamiz:
-          </h2>
-          <ul className="space-y-3 mb-8">
-            {[
-              "Nega Maqsadlarga erishish QIYINDEK tuyiladi?",
-              "Dangasalikning kelib chiqish sabablari?",
-              "Intizomga qanday qilib erishish mumkin?",
-              "Maqsad yo'lida \"Fail\" bo'lishning asl sabablari.",
-            ].map((topic, index) => (
-              <li
-                key={index}
-                className="relative flex items-center bg-white p-4 rounded-xl border border-yellow-100 shadow-sm"
-              >
-                <div className="absolute top-1 left-2 w-2 h-2 border-t border-l border-yellow-300 rounded-tl-sm"></div>
-                <div className="absolute bottom-1 right-2 w-2 h-2 border-b border-r border-yellow-300 rounded-br-sm"></div>
-                <div className="mr-4 w-3 h-3 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full"></div>
-                <span className="text-gray-700 text-lg font-medium">{topic}</span>
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="text-lg md:text-xl font-serif font-bold mb-4 text-center text-gray-800">
-            Bepul Vebinardan qanday foydalar olasiz?
-          </h3>
-          <ul className="space-y-3">
-            {[
-              "Dangasalikdan qutilish va Maqsadlarga erishishning qadamma-qadam bosqichlari",
-              "Hayotni tartiblash orqali Muammolarni yengish",
-              "Orzular orzuligacha qolmasdan ularni amalga oshirish formulalari",
-              "Odatlarni shakllantirishning bir nechta usullarini ko'rib chiqamiz",
-            ].map((benefit, index) => (
-              <li
-                key={index}
-                className="relative flex items-center bg-white p-4 rounded-xl border border-green-100 shadow-sm"
-              >
-                <div className="absolute top-1 left-2 w-2 h-2 border-t border-l border-green-300 rounded-tl-sm"></div>
-                <div className="absolute bottom-1 right-2 w-2 h-2 border-b border-r border-green-300 rounded-br-sm"></div>
-                <div className="mr-4 w-3 h-3 bg-gradient-to-br from-green-400 to-green-500 rounded-full"></div>
-                <span className="text-gray-700 text-lg font-medium">{benefit}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex justify-center my-8">
-            <button
-              onClick={handleRegister}
-              className="bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-600 hover:to-yellow-500 text-white font-bold text-xl px-8 py-4 rounded-lg shadow-lg transition-all duration-200"
-            >
-              ISHTIROK ETISH - BEPUL
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="text-center text-gray-600 py-4">
-        <p>© 2025 Jonli Vebinar. Barcha huquqlar himoyalangan.</p>
-      </footer>
+      </div>
 
       <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleModalSubmit} />
     </div>
